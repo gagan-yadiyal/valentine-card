@@ -13,7 +13,7 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            overflow: hidden; /* Keeps hearts inside the screen */
+            overflow: hidden;
         }
 
         .container {
@@ -25,19 +25,32 @@
             box-shadow: 0 15px 35px rgba(255, 75, 110, 0.2);
             text-align: center;
             z-index: 10;
+            /* Animation for smooth transition */
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Helper class to hide screens */
+        .hidden {
+            display: none;
         }
 
         img {
             width: 100%;
             aspect-ratio: 1 / 1;
             object-fit: cover;
-            border-radius: 50%; /* Circle looks more romantic! */
+            border-radius: 50%;
             border: 5px solid #ff4b6e;
             margin-bottom: 1.5rem;
         }
 
         h1 { color: #ff4b6e; font-size: 1.6rem; margin: 0.5rem 0; }
         p { color: #555; margin-bottom: 2rem; }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
         button {
             background: linear-gradient(45deg, #ff4b6e, #ff758c);
@@ -49,9 +62,21 @@
             cursor: pointer;
             width: 100%;
             box-shadow: 0 4px 15px rgba(255, 75, 110, 0.3);
+            transition: transform 0.2s;
         }
 
-        /* Hidden Audio Player */
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Secondary button style */
+        .btn-secondary {
+            background: white;
+            color: #ff4b6e;
+            border: 2px solid #ff4b6e;
+            box-shadow: none;
+        }
+
         #myAudio { display: none; }
 
         .heart {
@@ -69,7 +94,7 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="screen1">
         <img src="love_love.jpg" alt="Valentine">
         <h1>Happy Valentine's Day! ❤️</h1>
         <p>I'll never fall in love... unless it's with you.</p>
@@ -78,16 +103,28 @@
             <source src="music.mp3" type="audio/mpeg">
         </audio>
 
-        <button onclick="startExperience()">Shower with Love</button>
+        <div class="btn-group">
+            <button onclick="startExperience()">Shower with Love</button>
+            <button class="btn-secondary" onclick="nextScreen()">Take me in</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="screen2">
+        <img src="first_meet.jpg" alt="Our First Meet">
+        <h1>Our 1st Meet ❤️</h1>
+        <p>The day everything changed for the better.</p>
+
+        <div class="btn-group">
+            <button onclick="nextScreen()">Take me in</button>
+        </div>
     </div>
 
     <script>
+        // Function to handle heart rain and music
         function startExperience() {
-            // Play the music
             const audio = document.getElementById("myAudio");
             audio.play();
 
-            // Create hearts
             for (let i = 0; i < 30; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
@@ -98,6 +135,21 @@
                     document.body.appendChild(heart);
                     setTimeout(() => { heart.remove(); }, 5000);
                 }, i * 150);
+            }
+        }
+
+        // Function to switch between screens
+        function nextScreen() {
+            const s1 = document.getElementById('screen1');
+            const s2 = document.getElementById('screen2');
+
+            // Simple logic: If Screen 1 is visible, hide it and show Screen 2
+            if (!s1.classList.contains('hidden')) {
+                s1.classList.add('hidden');
+                s2.classList.remove('hidden');
+            } else {
+                // You can add a Screen 3 here if you want to keep going!
+                alert("The journey continues...");
             }
         }
     </script>
