@@ -25,14 +25,10 @@
             box-shadow: 0 15px 35px rgba(255, 75, 110, 0.2);
             text-align: center;
             z-index: 10;
-            /* Animation for smooth transition */
             transition: opacity 0.5s ease-in-out;
         }
 
-        /* Helper class to hide screens */
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
         img {
             width: 100%;
@@ -62,19 +58,6 @@
             cursor: pointer;
             width: 100%;
             box-shadow: 0 4px 15px rgba(255, 75, 110, 0.3);
-            transition: transform 0.2s;
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        /* Secondary button style */
-        .btn-secondary {
-            background: white;
-            color: #ff4b6e;
-            border: 2px solid #ff4b6e;
-            box-shadow: none;
         }
 
         #myAudio { display: none; }
@@ -85,6 +68,7 @@
             font-size: 24px;
             z-index: 1;
             animation: fall linear forwards;
+            pointer-events: none; /* User can click through falling hearts */
         }
 
         @keyframes fall {
@@ -92,7 +76,7 @@
         }
     </style>
 </head>
-<body>
+<body onclick="playMusic()">
 
     <div class="container" id="screen1">
         <img src="love_love.jpg" alt="Valentine">
@@ -104,52 +88,57 @@
         </audio>
 
         <div class="btn-group">
-            <button onclick="startExperience()">Shower with Love</button>
-            <button class="btn-secondary" onclick="nextScreen()">Take me in</button>
-        </div>
-    </div>
-
-    <div class="container hidden" id="screen2">
-        <img src="family.jpg" alt="Our First Meet">
-        <h1>Our Family Meet ❤️</h1>
-        <p>The day everything changed for the better.</p>
-
-        <div class="btn-group">
             <button onclick="nextScreen()">Take me in</button>
         </div>
     </div>
 
-    <script>
-        // Function to handle heart rain and music
-        function startExperience() {
-            const audio = document.getElementById("myAudio");
-            audio.play();
+    <div class="container hidden" id="screen2">
+        <img src="first_meet.jpg" alt="Our First Meet">
+        <h1>When our Family Met ❤️</h1>
+        <p>The day everything changed for the better.</p>
+        <button onclick="nextScreen()">Final Surprise</button>
+    </div>
 
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.classList.add('heart');
-                    heart.innerHTML = '❤️';
-                    heart.style.left = Math.random() * 100 + 'vw';
-                    heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                    document.body.appendChild(heart);
-                    setTimeout(() => { heart.remove(); }, 5000);
-                }, i * 150);
+    <script>
+        // 1. AUTO-HEARTS: Starts as soon as page loads and never stops
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            // Random sizes for variety
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            
+            document.body.appendChild(heart);
+
+            // Remove after animation ends to keep the page fast
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+
+        // Run the heart function every 300ms forever
+        setInterval(createHeart, 300);
+
+        // 2. AUDIO HANDLER: Plays on the first click anywhere
+        let musicStarted = false;
+        function playMusic() {
+            if (!musicStarted) {
+                const audio = document.getElementById("myAudio");
+                audio.play().catch(e => console.log("Audio waiting for interaction"));
+                musicStarted = true;
             }
         }
 
-        // Function to switch between screens
+        // 3. SCREEN SWITCHER
         function nextScreen() {
             const s1 = document.getElementById('screen1');
             const s2 = document.getElementById('screen2');
 
-            // Simple logic: If Screen 1 is visible, hide it and show Screen 2
             if (!s1.classList.contains('hidden')) {
                 s1.classList.add('hidden');
                 s2.classList.remove('hidden');
             } else {
-                // You can add a Screen 3 here if you want to keep going!
-                alert("The journey continues...");
+                alert("Happy Valentine's Day, my love!");
             }
         }
     </script>
